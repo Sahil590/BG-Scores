@@ -1,0 +1,47 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Backend",
+			"type": "shell",
+			"command": "${workspaceFolder}/venv/bin/python ${workspaceFolder}/backend/manage.py",
+			"args": [
+				"runserver",
+				"0.0.0.0:8000"
+			],
+			"isBackground": true,
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "test"
+		},
+		{
+			"label": "Run Backend Fix",
+			"type": "shell",
+			"command": "./venv/bin/python",
+			"args": [
+				"backend/manage.py",
+				"runserver",
+				"0.0.0.0:8000"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run Frontend",
+			"type": "shell",
+			"command": "cd",
+			"args": [
+				"frontend",
+				"&&",
+				"npm",
+				"run",
+				"dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}
