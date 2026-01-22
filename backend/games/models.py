@@ -2,7 +2,6 @@ from django.db import models
 
 class Game(models.Model):
     name = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='games/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -10,7 +9,6 @@ class Game(models.Model):
 
 class Player(models.Model):
     name = models.CharField(max_length=100)
-    avatar = models.ImageField(upload_to='players/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -4,12 +4,12 @@ from .models import Game, Player, Score
 class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields = ['id', 'name', 'image', 'created_at']
+        fields = '__all__'
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
-        fields = ['id', 'name', 'avatar', 'created_at']
+        fields = '__all__'
 
 class ScoreSerializer(serializers.ModelSerializer):
     game_name = serializers.ReadOnlyField(source='game.name')
