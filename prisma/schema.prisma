@@ -1,0 +1,46 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Game {
+  id        String   @id @default(cuid())
+  name      String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  scores    Score[]
+
+  @@index([createdAt])
+}
+
+model Player {
+  id        String   @id @default(cuid())
+  name      String
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  scores    Score[]
+
+  @@index([createdAt])
+}
+
+model Score {
+  id        String   @id @default(cuid())
+  gameId    String
+  playerId  String
+  score     Int
+  isWinner  Boolean  @default(false)
+  playedAt  DateTime @default(now())
+
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([gameId])
+  @@index([playerId])
+  @@index([playedAt])
+}

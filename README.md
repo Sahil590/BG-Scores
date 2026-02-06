@@ -1,247 +1,214 @@
-# Board Game Score Recorder
+# BG Scores - Board Game Score Tracker
 
-This is a web application to record board game scores, built with Django (Backend) and React (Frontend).
+A modern, full-stack web application for tracking board game scores, built with Next.js 14, TypeScript, Prisma, and Vercel Blob Storage.
 
-## Features
+## ✨ Features
 
-- Add Games with images
-- Add Players with avatars
-- Record Scores for a Game and Player
-- View Recent Scores
-- File storage using Vercel Blob Storage (production) or local filesystem (development)
+- 🎮 **Game Management** - Add and manage your board game collection with images
+- 👥 **Player Profiles** - Track players with custom avatars
+- 📊 **Score Tracking** - Record and view game scores with winner tracking
+- 🖼️ **Image Storage** - Automatic image uploads to Vercel Blob Storage
+- 🌙 **Dark Mode** - Built-in dark mode support
+- ⚡ **Server-Side Rendering** - Fast page loads with Next.js App Router
+- 📱 **Responsive Design** - Works on desktop, tablet, and mobile
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Backend**: Django 6.0, Django REST Framework
-- **Frontend**: React, Vite
-- **Database**: PostgreSQL (production) / SQLite (development)
-- **File Storage**: Vercel Blob Storage (production) / Local filesystem (development)
-- **Deployment**: Vercel
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres) with [Prisma ORM](https://www.prisma.io/)
+- **File Storage**: [Vercel Blob](https://vercel.com/docs/storage/vercel-blob)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-## Setup Instructions
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.9+
-- Node.js 16+
-- pip and npm
+- Node.js 18+ and npm
+- Vercel account (for deployment and storage)
 
-### Backend Setup
+### Local Development
 
-1. Create a virtual environment:
-
+1. **Clone the repository**
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   git clone https://github.com/Sahil590/BG-Scores.git
+   cd BG-Scores
    ```
 
-2. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run migrations:
-
-   ```bash
-   cd backend
-   python manage.py migrate
-   ```
-
-4. Create a superuser (optional, for admin access):
-
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-5. Start the server:
-   ```bash
-   python manage.py runserver
-   ```
-   The API will be available at `http://127.0.0.1:8000/api/`.
-   Admin panel: `http://127.0.0.1:8000/admin/`
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-
-   ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. Start the development server:
+3. **Set up environment variables**
+   
+   Copy `.env.example` to `.env.local`:
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   You'll need to set up Vercel Postgres and Blob Storage:
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Create a new project (if needed)
+   - Add **Vercel Postgres** storage (Storage tab → Create → Postgres)
+   - Add **Vercel Blob** storage (Storage tab → Create → Blob)
+   - Copy the environment variables from each to your `.env.local`
+
+4. **Set up the database**
+   ```bash
+   npx prisma db push
+   ```
+
+5. **Run the development server**
    ```bash
    npm run dev
    ```
-   The app will be available at `http://localhost:5173`.
 
-## Deployment to Vercel
+6. **Open in browser**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-### 1. Prerequisites
-
-- Vercel account
-- GitHub repository with your code
-- PostgreSQL database (e.g., Vercel Postgres, Neon, Supabase)
-- Vercel Blob Storage configured
-
-### 2. Configure Vercel Blob Storage
-
-1. Go to your Vercel Dashboard
-2. Navigate to **Storage** → **Blob**
-3. Create a new Blob Store
-4. Copy the `BLOB_READ_WRITE_TOKEN`
-
-### 3. Set Environment Variables in Vercel
-
-In your Vercel project settings, add these environment variables:
-
-```bash
-# Database (required)
-POSTGRES_URL=postgresql://user:pass@host:port/dbname
-
-# Security (required for production)
-SECRET_KEY=your-secret-key-here
-DEBUG=False
-
-# File Storage (required for uploads)
-BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxxxxxxxxxxxx
-```
-
-### 4. Deploy
-
-1. Connect your GitHub repository to Vercel
-2. Vercel will automatically detect the configuration from `vercel.json`
-3. Click **Deploy**
-
-The `vercel.json` configuration handles:
-
-- Django backend deployment
-- React frontend build
-- Routing between API and frontend
-
-### 5. Initial Setup After Deployment
-
-Run migrations in Vercel's deployment terminal or using Vercel CLI:
-
-```bash
-# Using Vercel CLI
-vercel env pull .env.local
-python backend/manage.py migrate
-```
-
-## API Endpoints
-
-- `GET /api/games/` - List all games
-- `POST /api/games/` - Create a new game (supports file upload)
-- `GET /api/games/{id}/` - Get game details
-- `PUT/PATCH /api/games/{id}/` - Update a game (supports file upload)
-- `DELETE /api/games/{id}/` - Delete a game
-
-- `GET /api/players/` - List all players
-- `POST /api/players/` - Create a new player (supports file upload)
-- `GET /api/players/{id}/` - Get player details
-- `PUT/PATCH /api/players/{id}/` - Update a player (supports file upload)
-- `DELETE /api/players/{id}/` - Delete a player
-
-- `GET /api/scores/` - List all scores
-- `POST /api/scores/` - Create a new score
-- `GET /api/scores/{id}/` - Get score details
-- `PUT/PATCH /api/scores/{id}/` - Update a score
-- `DELETE /api/scores/{id}/` - Delete a score
-
-### File Upload Example
-
-```bash
-# Create a game with an image
-curl -X POST http://localhost:8000/api/games/ \
-  -H "Content-Type: multipart/form-data" \
-  -F "name=Chess" \
-  -F "image=@/path/to/chess.jpg"
-
-# Response:
-{
-  "id": 1,
-  "name": "Chess",
-  "image": "https://xxxxx.public.blob.vercel-storage.com/games/chess-abc123.jpg",
-  "created_at": "2026-02-06T10:30:00Z"
-}
-```
-
-## File Storage Details
-
-### Production (Vercel)
-
-- Files are stored in Vercel Blob Storage
-- Automatic CDN distribution
-- Public URLs returned in API responses
-- No server storage needed
-
-### Development (Local)
-
-- Files stored in `backend/media/` directory
-- Served by Django at `/media/` URL
-- Not committed to git (in .gitignore)
-
-For more details, see [VERCEL_BLOB_SETUP.md](VERCEL_BLOB_SETUP.md).
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 BG-Scores/
-├── backend/
-│   ├── core/              # Django project settings
-│   │   ├── settings.py
-│   │   ├── urls.py
-│   │   ├── storage.py     # Vercel Blob Storage backend
-│   │   └── wsgi.py
-│   ├── games/             # Main app
-│   │   ├── models.py      # Game, Player, Score models
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   ├── urls.py
-│   │   └── admin.py
-│   ├── manage.py
-│   └── build_files.sh     # Vercel build script
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   └── App.jsx
-│   ├── package.json
-│   └── vite.config.js
-├── requirements.txt
-├── vercel.json           # Vercel configuration
-└── README.md
+├── app/                      # Next.js App Router
+│   ├── api/                  # API Routes
+│   │   ├── games/           # Games CRUD endpoints
+│   │   ├── players/         # Players CRUD endpoints
+│   │   └── scores/          # Scores CRUD endpoints
+│   ├── games/               # Games page
+│   ├── players/             # Players page
+│   ├── scores/              # Scores page
+│   ├── layout.tsx           # Root layout
+│   ├── page.tsx             # Home page
+│   └── globals.css          # Global styles
+├── components/              # React components
+│   └── Navbar.tsx          # Navigation component
+├── lib/                     # Utility libraries
+│   ├── prisma.ts           # Prisma client
+│   └── blob.ts             # Blob storage utilities
+├── prisma/                 # Database schema
+│   └── schema.prisma       # Prisma schema file
+├── package.json           # Dependencies
+├── tsconfig.json          # TypeScript config
+└── vercel.json            # Vercel deployment config
 ```
 
-## Troubleshooting
+## 🎮 Usage
 
-### File Uploads Not Working
+### Adding Games
 
-1. Check that `BLOB_READ_WRITE_TOKEN` is set in production
-2. Verify the token has read/write permissions
-3. Ensure `Pillow` is installed: `pip install Pillow`
-4. Check request uses `multipart/form-data` content type
+1. Navigate to the **Games** page
+2. Click **+ Add Game**
+3. Enter game name and optionally upload an image
+4. Click **Create Game**
+
+### Adding Players
+
+1. Navigate to the **Players** page
+2. Click **+ Add Player**
+3. Enter player name and optionally upload an avatar
+4. Click **Add Player**
+
+### Recording Scores
+
+1. Navigate to the **Scores** page
+2. Click **+ Add Score**
+3. Select a game and player from the dropdowns
+4. Enter the score
+5. Check **Winner** if this player won
+6. Click **Record Score**
+
+## 🔌 API Endpoints
+
+### Games
+- `GET /api/games` - List all games
+- `POST /api/games` - Create a game (multipart/form-data)
+- `GET /api/games/[id]` - Get game details
+- `PATCH /api/games/[id]` - Update a game (multipart/form-data)
+- `DELETE /api/games/[id]` - Delete a game
+
+### Players
+- `GET /api/players` - List all players
+- `POST /api/players` - Create a player (multipart/form-data)
+- `GET /api/players/[id]` - Get player details
+- `PATCH /api/players/[id]` - Update a player (multipart/form-data)
+- `DELETE /api/players/[id]` - Delete a player
+
+### Scores
+- `GET /api/scores` - List all scores
+- `POST /api/scores` - Create a score (JSON)
+- `GET /api/scores/[id]` - Get score details
+- `PATCH /api/scores/[id]` - Update a score (JSON)
+- `DELETE /api/scores/[id]` - Delete a score
+
+## 🚢 Deployment to Vercel
+
+### One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Sahil590/BG-Scores)
+
+### Manual Deployment
+
+1. **Push to GitHub** (if not already done)
+
+2. **Import to Vercel**
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click **Add New** → **Project**
+   - Import your GitHub repository
+
+3. **Configure Storage**
+   - Vercel will auto-detect Next.js
+   - Add storage when prompted:
+     - **Vercel Postgres** (for database)
+     - **Vercel Blob** (for file storage)
+   - Environment variables will be automatically configured
+
+4. **Deploy**
+   - Click **Deploy**
+   - Wait for deployment to complete
+   - Your app will be live at `https://your-project.vercel.app`
+
+## 📝 Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run db:push      # Push schema changes to database
+npm run db:studio    # Open Prisma Studio (database GUI)
+```
+
+## 🐛 Troubleshooting
 
 ### Database Connection Issues
 
-1. Verify `POSTGRES_URL` environment variable is set
-2. Check database allows connections from Vercel IPs
-3. Ensure database exists and migrations are run
+If you see database errors:
+1. Check that all `POSTGRES_*` variables are set correctly in `.env.local`
+2. Run `npx prisma db push` to sync the schema
+3. Check Vercel Postgres dashboard for connection status
 
-### Local Development Issues
+### Blob Storage Upload Fails
 
-1. Make sure virtual environment is activated
-2. Check all dependencies are installed: `pip install -r requirements.txt`
-3. Run migrations: `python manage.py migrate`
-4. For file uploads locally, don't set `BLOB_READ_WRITE_TOKEN`
+If image uploads fail:
+1. Verify `BLOB_READ_WRITE_TOKEN` is set
+2. Check file size is under 10MB
+3. Ensure file type is an image (jpg, png, gif, webp)
 
-## License
+### Build Errors on Vercel
 
-MIT License
+If deployment fails:
+1. Check build logs in Vercel dashboard
+2. Ensure all environment variables are set
+3. Verify `prisma generate` runs successfully
+
+## 📄 License
+
+MIT License - feel free to use this project for your own purposes!
+
+---
+
+**Built with ❤️ using Next.js and Vercel**
