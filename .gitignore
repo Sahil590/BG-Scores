@@ -1,0 +1,5 @@
+.mypy_cache
+.venv
+__pycache__
+db.sqlite3
+.python-version

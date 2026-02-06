@@ -126,4 +126,14 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Media files (User uploads)
+# Use Vercel Blob Storage for production, local filesystem for development
+if os.environ.get('BLOB_READ_WRITE_TOKEN'):
+    DEFAULT_FILE_STORAGE = 'core.storage.VercelBlobStorage'
+    MEDIA_URL = 'https://blob.vercel-storage.com/'  # This will be overridden by actual blob URLs
+else:
+    # Local development settings
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
+
 CORS_ALLOW_ALL_ORIGINS = True
