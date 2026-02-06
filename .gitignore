@@ -1,5 +1,24 @@
 .mypy_cache
 .venv
+venv/
 __pycache__
 db.sqlite3
 .python-version
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.local
+node_modules/
+dist/
+build/
+*.log
+.DS_Store
+
+# Media files (only used in local development)
+media/
+backend/media/
+
+# Static files
+staticfiles/
+backend/staticfiles/
