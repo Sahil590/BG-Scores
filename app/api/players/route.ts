@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { uploadToBlob, deleteFromBlob } from '@/lib/blob';
+import { uploadToBlob } from '@/lib/blob';
 
 // GET /api/players - List all players
 export async function GET() {
