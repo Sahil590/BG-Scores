@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { uploadToBlob, deleteFromBlob } from '@/lib/blob';
 
@@ -71,6 +72,14 @@ export async function PATCH(
 
     return NextResponse.json(game);
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        return NextResponse.json({ error: 'Game not found' }, { status: 404 });
+      }
+      if (error.code === 'P2002') {
+        return NextResponse.json({ error: 'A game with that name already exists' }, { status: 409 });
+      }
+    }
     console.error('Error updating game:', error);
     return NextResponse.json(
       { error: 'Failed to update game' },

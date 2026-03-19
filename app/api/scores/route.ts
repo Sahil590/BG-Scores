@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 
 // GET /api/scores - List all scores
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
       data: {
         gameId,
         playerId,
-        score: parseInt(score),
+        score: parseInt(score, 10),
         isWinner: isWinner || false,
       },
       include: {
@@ -49,6 +50,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newScore, { status: 201 });
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2003') {
+        return NextResponse.json(
+          { error: 'Invalid gameId or playerId — referenced record does not exist' },
+          { status: 422 }
+        );
+      }
+    }
     console.error('Error creating score:', error);
     return NextResponse.json(
       { error: 'Failed to create score' },

@@ -4,16 +4,17 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Game {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   imageUrl  String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   scores    Score[]
 
   @@index([createdAt])
@@ -21,21 +22,23 @@ model Game {
 
 model Player {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   avatarUrl String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   scores    Score[]
 
   @@index([createdAt])
 }
 
 model Score {
-  id        String   @id @default(cuid())
-  gameId    String
-  playerId  String
-  score     Int
-  isWinner  Boolean  @default(false)
-  playedAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  gameId   String
+  playerId String
+  score    Int
+  isWinner Boolean  @default(false)
+  playedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
   player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
@@ -43,4 +46,5 @@ model Score {
   @@index([gameId])
   @@index([playerId])
   @@index([playedAt])
+  @@index([gameId, playerId])
 }

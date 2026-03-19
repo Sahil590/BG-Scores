@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 
 // GET /api/scores/[id] - Get a single score
@@ -43,7 +44,7 @@ export async function PATCH(
 
     const updateData: { score?: number; isWinner?: boolean } = {};
 
-    if (score !== undefined) updateData.score = parseInt(score);
+    if (score !== undefined) updateData.score = parseInt(score, 10);
     if (isWinner !== undefined) updateData.isWinner = isWinner;
 
     const updatedScore = await prisma.score.update({
@@ -57,6 +58,11 @@ export async function PATCH(
 
     return NextResponse.json(updatedScore);
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        return NextResponse.json({ error: 'Score not found' }, { status: 404 });
+      }
+    }
     console.error('Error updating score:', error);
     return NextResponse.json(
       { error: 'Failed to update score' },
@@ -77,6 +83,11 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Score deleted successfully' });
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        return NextResponse.json({ error: 'Score not found' }, { status: 404 });
+      }
+    }
     console.error('Error deleting score:', error);
     return NextResponse.json(
       { error: 'Failed to delete score' },
